@@ -1,0 +1,2 @@
+# tradcalc
+Translation calculator
