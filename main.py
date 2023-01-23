@@ -8,7 +8,7 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), da
 # TODO: colocar pra ler o arquivo de textos correto dependendo do idioma da pessoa
 # TODO: deixar os presets separado pra cada aba, para evitar conflito
 
-inter = None # não sei é necessário ter esta variável vazia
+# inter = None não sei é necessário ter esta variável vazia
 # config de idioma
 with open('config.yml', 'r') as f:
     lang = yaml.load(f.read(), Loader=yaml.Loader)
@@ -21,7 +21,7 @@ with open(f"lang/{lang['lang']}.yaml", "r", encoding='utf-8') as f:
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-
+        strvar = customtkinter.StringVar
         self.title(inter["texts"]["calculator"])
         self.geometry("380x500")
         self.resizable(False, False)
@@ -43,33 +43,33 @@ class App(customtkinter.CTk):
                 # print(f'O documento possui {round(div, 2)} laudas')
                 total = float(self.preco.get().replace(",", ".")) * div
                 # print(f'Preço total: R${round(total, 2)}')
-                self.result.configure(text=f'{inter["texts"]["total_val"]}: {self.currency.get()} '
-                                           f'{round(total, 2)} ({round(div, 2)} {inter["texts"]["sheets"]})')
-                if self.copy.get() == 1:
-                    pyperclip.copy(round(total, 2))
+                self.result.configure(textvariable=strvar(value=f'{inter["texts"]["total_val"]}: {self.currency.get()} '
+                                           f'{round(total, 2)} ({round(div, 2)} {inter["texts"]["sheets"]})'))
 
             except ValueError:
                 # verificando se todos os campos estão preenchidos
-                if self.char.get() is None:
-                    self.char.configure(border_color="red")
-                if self.tam.get() is None:
-                    self.tam.configure(border_color="red")
-                if self.preco.get() is None:
-                    self.preco.configure(border_color="red")
-                if not self.char.get().isnumeric():
-                    self.char.configure(border_color="red")
-                if not self.tam.get().isnumeric():
-                    self.tam.configure(border_color="red")
-                if not self.preco.get().isnumeric():
-                    self.preco.configure(border_color="red")
-                self.result.configure(text=inter["errors"]["invalid_vals"])
+                for x in [self.char, self.tam, self.preco]:
+                    if x.get() == '' or x.get().isnumeric() == False:
+                        x.configure(border_color="red")
+                    else:
+                        pass
+                self.result.configure(textvariable=strvar(value=inter["errors"]["invalid_vals"]))
+        # -------------------------- calculo por palavra -------------------------------------
 
         def calcword():
-            total = float(self.words.get()) * float(self.prpa.get().replace(",", "."))
-            self.result2 = customtkinter.CTkEntry(self.tab.tab(inter["texts"]["words"]), state="readonly",
-                                                  textvariable=customtkinter.StringVar(value=f"{self.currency.get()} {round(total, 3)}"))
-            self.result2.grid()
-        # teste do preset, remover quando tiver db
+            try:
+                self.prpa.configure(border_color="gray")
+                self.words.configure(border_color="gray")
+                total = float(self.words.get()) * float(self.prpa.get().replace(",", "."))
+                self.result.configure(textvariable=strvar(value=f"{self.currency.get()} {round(total, 3)}"))
+            except ValueError:
+                for x in [self.prpa, self.words]:
+                    if x.get() == '' or x.get().isnumeric() == False:
+                        x.configure(border_color="red")
+                    else:
+                        pass
+                self.result.configure(textvariable=strvar(value=inter["errors"]["invalid_vals"]))
+        # =================apagar isso quando tiver preset funcional====================
         correct = tkinter.DoubleVar(value=1500)
 
         def presets(x):
@@ -92,11 +92,13 @@ class App(customtkinter.CTk):
         self.preco.grid()
         self.calcbutton = customtkinter.CTkButton(master=self.tab.tab(inter["texts"]["sheet"]), text=inter["texts"]["compute"], command=calc)
         self.calcbutton.grid(pady=5)
-        self.result = customtkinter.CTkLabel(self.tab.tab(inter["texts"]["sheet"]), text="")
-        self.result.grid()
-
+        """self.result = customtkinter.CTkLabel(self.tab.tab(inter["texts"]["sheet"]), text="")
+        self.result.grid()"""
+        self.result = customtkinter.CTkEntry(self, state='readonly', width=280)
+        self.result.grid(row=2, column=1)
+        #================================= configs ===================================
         self.options = customtkinter.CTkFrame(self, width=240)
-        self.options.grid(row=2, column=1, padx=40, pady=20, sticky="nw")
+        self.options.grid(row=3, column=1, padx=40, pady=20, sticky="nw")
         self.curlabel = customtkinter.CTkLabel(self.options, text=inter["texts"]["currency"])
         self.curlabel.grid(column=0, row=0)
         self.currency = customtkinter.CTkOptionMenu(self.options, dynamic_resizing=False,
@@ -107,8 +109,6 @@ class App(customtkinter.CTk):
         self.preset = customtkinter.CTkOptionMenu(self.options, dynamic_resizing=True,
                                                   values=["PRESET1", "PRESET 2"], command=presets)
         self.preset.grid(row=1, column=2, padx=5, pady=5)
-        self.copy = customtkinter.CTkCheckBox(self.options, text=inter["texts"]["copy_result"])
-        self.copy.grid(row=2, column=0, padx=5, pady=5)
 
 
         # ------------------------- Calculo por palavras ----------------------

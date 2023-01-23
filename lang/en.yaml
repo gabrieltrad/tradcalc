@@ -1,7 +1,7 @@
 texts:
   calculator: "Calculator"
   words: "Word"
-  total_val: "Total price"
+  total_val: "Total"
   char_count: "Amount of characters"
   sheet: "Sheet"
   sheets: "Sheets"
@@ -15,4 +15,4 @@ texts:
   sheet_size: "Sheet size"
 
 errors:
-  invalid_vals: "Invalid number!"
+  invalid_vals: "Invalid arguments!"
