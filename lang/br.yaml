@@ -13,6 +13,8 @@ texts:
   word_count: "Quantidade de palavras"
   price_by_word: "Preço por palavra"
   sheet_size: "Tamanho da lauda"
+  language: "Idioma"
+  select: "Selecionar"
 
 errors:
   invalid_vals: "Valores inválidos!"

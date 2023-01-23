@@ -1,6 +1,8 @@
 import yaml
 import customtkinter
 import tkinter
+import os
+from PIL import ImageTk, Image# para o ícone
 import pyperclip
 customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
@@ -9,9 +11,11 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), da
 # TODO: deixar os presets separado pra cada aba, para evitar conflito
 
 # inter = None não sei é necessário ter esta variável vazia
+
 # config de idioma
 with open('config.yml', 'r') as f:
     lang = yaml.load(f.read(), Loader=yaml.Loader)
+
 with open(f"lang/{lang['lang']}.yaml", "r", encoding='utf-8') as f:
     inter = yaml.load(f.read(), Loader=yaml.Loader)
 
@@ -24,6 +28,7 @@ class App(customtkinter.CTk):
         strvar = customtkinter.StringVar
         self.title(inter["texts"]["calculator"])
         self.geometry("380x500")
+
         self.resizable(False, False)
         self.tab = customtkinter.CTkTabview(self)
         self.tab.grid(row=1, column=1, padx=40, pady=20, sticky="nw")
@@ -72,6 +77,16 @@ class App(customtkinter.CTk):
         # =================apagar isso quando tiver preset funcional====================
         correct = tkinter.DoubleVar(value=1500)
 
+        def locale(x):
+            """preciso achar uma forma melhor pra isso..."""
+            with open('config.yml', 'w') as f:
+                newlang = [{'lang': x}]
+                yaml.dump_all(newlang, f)
+            with open(f"lang/{lang['lang']}.yaml", "r", encoding='utf-8') as f:
+                yaml.load(f.read(), Loader=yaml.Loader)
+            app.destroy()
+            os.system("main.py")
+
         def presets(x):
             if x == "PRESET1":
                 self.tam.configure(textvariable=correct, state="readonly", text_color="grey")
@@ -92,11 +107,10 @@ class App(customtkinter.CTk):
         self.preco.grid()
         self.calcbutton = customtkinter.CTkButton(master=self.tab.tab(inter["texts"]["sheet"]), text=inter["texts"]["compute"], command=calc)
         self.calcbutton.grid(pady=5)
-        """self.result = customtkinter.CTkLabel(self.tab.tab(inter["texts"]["sheet"]), text="")
-        self.result.grid()"""
         self.result = customtkinter.CTkEntry(self, state='readonly', width=280)
         self.result.grid(row=2, column=1)
-        #================================= configs ===================================
+
+        # ================================= configs ===================================
         self.options = customtkinter.CTkFrame(self, width=240)
         self.options.grid(row=3, column=1, padx=40, pady=20, sticky="nw")
         self.curlabel = customtkinter.CTkLabel(self.options, text=inter["texts"]["currency"])
@@ -104,13 +118,16 @@ class App(customtkinter.CTk):
         self.currency = customtkinter.CTkOptionMenu(self.options, dynamic_resizing=False,
                                                     values=["BRL", "USD", "EUR"], )
         self.currency.grid(padx=5, pady=5)
-        self.presetlab = customtkinter.CTkLabel(self.options, text="Presets")
+        """self.presetlab = customtkinter.CTkLabel(self.options, text="Presets")
         self.presetlab.grid(column=2, row=0)
         self.preset = customtkinter.CTkOptionMenu(self.options, dynamic_resizing=True,
                                                   values=["PRESET1", "PRESET 2"], command=presets)
-        self.preset.grid(row=1, column=2, padx=5, pady=5)
-
-
+        self.preset.grid(row=1, column=2, padx=5, pady=5)"""
+        self.langlab = customtkinter.CTkLabel(self.options, text=inter["texts"]['language'])
+        self.langlab.grid(column=2, row=0)
+        self.lang = customtkinter.CTkOptionMenu(self.options, values=['en', 'br'], command=locale)
+        self.lang.set(inter['texts']['select'])
+        self.lang.grid(row=1, column=2, padx=5, pady=5)
         # ------------------------- Calculo por palavras ----------------------
         self.wordslabel = customtkinter.CTkLabel(self.tab.tab(inter["texts"]["words"]), text=inter["texts"]["word_count"])
         self.wordslabel.grid()
@@ -123,8 +140,6 @@ class App(customtkinter.CTk):
         self.prpabutton = customtkinter.CTkButton(self.tab.tab(inter["texts"]["words"]), text=inter["texts"]["compute"],
                                                   command=calcword)
         self.prpabutton.grid(pady=5)
-        """self.result2 = customtkinter.CTkEntry(self.tab.tab("Palavras"), state="readonly", placeholder_text="Total")
-        self.result2.grid()"""
 
 
 if __name__ == "__main__":

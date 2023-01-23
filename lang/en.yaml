@@ -13,6 +13,7 @@ texts:
   word_count: "Number of words"
   price_by_word: "Price by word"
   sheet_size: "Sheet size"
-
+  language: "Language"
+  select: "Select"
 errors:
   invalid_vals: "Invalid arguments!"
