@@ -1,0 +1,18 @@
+texts:
+  calculator: "Calculator"
+  words: "Word"
+  total_val: "Total price"
+  char_count: "Amount of characters"
+  sheet: "Sheet"
+  sheets: "Sheets"
+  val: "amount"
+  price_by_sheet: "Price of each sheet"
+  compute: "Calculate!"
+  currency: "Currency"
+  copy_result: "Copy to clipboard"
+  word_count: "Number of words"
+  price_by_word: "Price by word"
+  sheet_size: "Sheet size"
+
+errors:
+  invalid_vals: "Invalid number!"

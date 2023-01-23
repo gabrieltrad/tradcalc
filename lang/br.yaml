@@ -5,7 +5,7 @@ texts:
   char_count: "Quantidade de caracteres"
   sheet: "Lauda"
   sheets: "Laudas"
-  val: "Valor"
+  val: "valor"
   price_by_sheet: "Preço por lauda"
   compute: "Calcular!"
   currency: "Moeda"

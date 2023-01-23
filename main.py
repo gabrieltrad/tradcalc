@@ -6,15 +6,19 @@ customtkinter.set_appearance_mode("System")  # Modes: system (default), light, d
 customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
 # TODO: colocar pra ler o arquivo de textos correto dependendo do idioma da pessoa
-inter = None
-with open("br.yaml", "r") as f:
+# TODO: deixar os presets separado pra cada aba, para evitar conflito
+
+inter = None # não sei é necessário ter esta variável vazia
+# config de idioma
+with open('config.yml', 'r') as f:
+    lang = yaml.load(f.read(), Loader=yaml.Loader)
+with open(f"lang/{lang['lang']}.yaml", "r", encoding='utf-8') as f:
     inter = yaml.load(f.read(), Loader=yaml.Loader)
 
-print(inter)
+# print(inter)
 
 
 class App(customtkinter.CTk):
-    """TODO: mover os presets pra cada aba, pra ficar individual"""
     def __init__(self):
         super().__init__()
 
@@ -41,7 +45,7 @@ class App(customtkinter.CTk):
                 # print(f'Preço total: R${round(total, 2)}')
                 self.result.configure(text=f'{inter["texts"]["total_val"]}: {self.currency.get()} '
                                            f'{round(total, 2)} ({round(div, 2)} {inter["texts"]["sheets"]})')
-                if self.copy.get() is 1:
+                if self.copy.get() == 1:
                     pyperclip.copy(round(total, 2))
 
             except ValueError:
@@ -105,6 +109,8 @@ class App(customtkinter.CTk):
         self.preset.grid(row=1, column=2, padx=5, pady=5)
         self.copy = customtkinter.CTkCheckBox(self.options, text=inter["texts"]["copy_result"])
         self.copy.grid(row=2, column=0, padx=5, pady=5)
+
+
         # ------------------------- Calculo por palavras ----------------------
         self.wordslabel = customtkinter.CTkLabel(self.tab.tab(inter["texts"]["words"]), text=inter["texts"]["word_count"])
         self.wordslabel.grid()
@@ -114,7 +120,8 @@ class App(customtkinter.CTk):
         self.prpalabel.grid()
         self.prpa = customtkinter.CTkEntry(self.tab.tab(inter["texts"]["words"]), placeholder_text=inter["texts"]["val"])
         self.prpa.grid()
-        self.prpabutton = customtkinter.CTkButton(self.tab.tab(inter["texts"]["words"]), text=inter["texts"]["compute"], command=calcword)
+        self.prpabutton = customtkinter.CTkButton(self.tab.tab(inter["texts"]["words"]), text=inter["texts"]["compute"],
+                                                  command=calcword)
         self.prpabutton.grid(pady=5)
         """self.result2 = customtkinter.CTkEntry(self.tab.tab("Palavras"), state="readonly", placeholder_text="Total")
         self.result2.grid()"""
