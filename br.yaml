@@ -1,0 +1,18 @@
+texts:
+  calculator: "Calculadora"
+  words: "Palavras"
+  total_val: "Valor total"
+  char_count: "Quantidade de caracteres"
+  sheet: "Lauda"
+  sheets: "Laudas"
+  val: "Valor"
+  price_by_sheet: "Preço por lauda"
+  compute: "Calcular!"
+  currency: "Moeda"
+  copy_result: "Copiar total"
+  word_count: "Quantidade de palavras"
+  price_by_word: "Preço por palavra"
+  sheet_size: "Tamanho da lauda"
+
+errors:
+  invalid_vals: "Valores inválidos!"
