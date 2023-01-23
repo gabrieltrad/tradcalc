@@ -1,5 +1,6 @@
 import customtkinter
 import tkinter
+import pyperclip
 customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
@@ -19,7 +20,6 @@ class App(customtkinter.CTk):
         self.tab.tab("Lauda").grid_columnconfigure(0, weight=1)
         self.tab.tab("Palavras").grid_columnconfigure(0, weight=1)
 
-
         def calc():
             """calculo de laudas usando regra de três."""
             try:
@@ -33,6 +33,8 @@ class App(customtkinter.CTk):
                 # print(f'Preço total: R${round(total, 2)}')
                 self.result.configure(text=f'Valor total: {self.currency.get()} '
                                            f'{round(total, 2)} ({round(div, 2)} laudas)')
+                if self.copy.get() is 1:
+                    pyperclip.copy(round(total, 2))
 
             except ValueError:
                 # verificando se todos os campos estão preenchidos
@@ -65,7 +67,7 @@ class App(customtkinter.CTk):
         # -------------- caracteres    ------------------
         self.charlabel = customtkinter.CTkLabel(self.tab.tab("Lauda"), text="Quantidade de caracteres")
         self.charlabel.grid()
-        self.char = customtkinter.CTkEntry(self.tab.tab("Lauda"), placeholder_text="Valor" )
+        self.char = customtkinter.CTkEntry(self.tab.tab("Lauda"), placeholder_text="Valor")
         self.char.grid()
         # ----------------- laudas     -----------------
         self.tamlabel = customtkinter.CTkLabel(self.tab.tab("Lauda"), text="Tamanho da lauda")
@@ -93,6 +95,8 @@ class App(customtkinter.CTk):
         self.preset = customtkinter.CTkOptionMenu(self.options, dynamic_resizing=True,
                                                   values=["PRESET1", "PRESET 2"], command=presets)
         self.preset.grid(row=1, column=2, padx=5, pady=5)
+        self.copy = customtkinter.CTkCheckBox(self.options, text="Copiar total")
+        self.copy.grid(row=2, column=0, padx=5, pady=5)
         # ------------------------- Calculo por palavras ----------------------
         self.wordslabel = customtkinter.CTkLabel(self.tab.tab("Palavras"), text="Quantidade de palavras")
         self.wordslabel.grid()
